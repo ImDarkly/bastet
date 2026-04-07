@@ -1,0 +1,10 @@
+# Godot-specific
+.godot/
+*.uid
+
+# Export artifacts
+exports/
+
+# OS junk
+.DS_Store
+Thumbs.db
