@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://boxi2jih5hkur"]
+
+[ext_resource type="Texture2D" uid="uid://bo5q7hqbqwv4u" path="res://client/assests/sprites/pet/player-single.png" id="1_ike46"]
+[ext_resource type="Script" uid="uid://v86rg36kmt81" path="res://client/scenes/pet/pet.gd" id="2_or48i"]
+
+[node name="Pet" type="Node2D" unique_id=241145293]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1997100712]
+scale = Vector2(10, 10)
+texture = ExtResource("1_ike46")
+script = ExtResource("2_or48i")
