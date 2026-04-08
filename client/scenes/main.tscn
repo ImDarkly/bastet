@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://brmyrfrnqqlyp"]
+
+[ext_resource type="PackedScene" uid="uid://boxi2jih5hkur" path="res://client/scenes/pet/pet.tscn" id="1_p8t16"]
+[ext_resource type="Script" uid="uid://fatjxm0smu43" path="res://client/scenes/pet/pet.gd" id="3_wcdhb"]
+[ext_resource type="Script" uid="uid://6ogcw1rqeys2" path="res://client/scenes/hud/hud.gd" id="4_rs6ys"]
+
+[node name="Main" type="Node2D" unique_id=615232316]
+
+[node name="Pet" parent="." unique_id=241145293 instance=ExtResource("1_p8t16")]
+position = Vector2(0, -4)
+script = ExtResource("3_wcdhb")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=983425734]
+script = ExtResource("4_rs6ys")
+
+[node name="StatsBars" type="HBoxContainer" parent="HUD" unique_id=1342027195]
+custom_minimum_size = Vector2(0, 80)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="HungerBar" type="ProgressBar" parent="HUD/StatsBars" unique_id=421010561]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HappinessBar" type="ProgressBar" parent="HUD/StatsBars" unique_id=1877887279]
+layout_mode = 2
+size_flags_horizontal = 3
