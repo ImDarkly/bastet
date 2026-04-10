@@ -26,3 +26,26 @@ size_flags_horizontal = 3
 [node name="HappinessBar" type="ProgressBar" parent="HUD/StatsBars" unique_id=1877887279]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="StatsButtons" type="VBoxContainer" parent="HUD" unique_id=321629005]
+custom_minimum_size = Vector2(0, 144)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HungerButton" type="Button" parent="HUD/StatsButtons" unique_id=184703335]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+text = "Feed"
+
+[node name="HappinessButton" type="Button" parent="HUD/StatsButtons" unique_id=2113393694]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+text = "Play"
+
+[connection signal="pressed" from="HUD/StatsButtons/HungerButton" to="HUD" method="_on_hunger_button_pressed"]
+[connection signal="pressed" from="HUD/StatsButtons/HappinessButton" to="HUD" method="_on_happiness_button_pressed"]

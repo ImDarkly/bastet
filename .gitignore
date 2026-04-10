@@ -8,3 +8,6 @@ exports/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Temporary files
+*.tmp
