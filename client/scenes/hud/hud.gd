@@ -3,6 +3,8 @@ extends CanvasLayer
 var hunger: float = 0.0
 var happiness: float = 0.0
 
+const DECAY_RATE: float = 1.0 / 30.0
+
 @onready var hunger_bar = $StatsBars/HungerBar
 @onready var happiness_bar = $StatsBars/HappinessBar
 
@@ -10,10 +12,13 @@ var happiness: float = 0.0
 @onready var happiness_button = $StatsButtons/HappinessButton
 
 func _ready():
-	hunger_button.pressed.connect(_on_hunger_button_pressed)
-	happiness_button.pressed.connect(_on_happiness_button_pressed)
 	update_bars()
 
+
+func _process(delta: float) -> void:
+	hunger = clamp(hunger  - DECAY_RATE * delta, 0.0, 100.0)
+	happiness = clamp(happiness - DECAY_RATE * delta, 0.0, 100.0)
+	update_bars()
 
 func _on_hunger_button_pressed() -> void:
 	hunger = clamp(hunger + 10.0, 0.0, 100.0)
