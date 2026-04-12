@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bo5q7hqbqwv4u"
-path="res://.godot/imported/player-single.png-4da8d115f0cfac701186a89e5df11d35.ctex"
+uid="uid://0xenbyxbbvxa"
+path="res://.godot/imported/tall.png-c278237ac36ad32bacac411a65677204.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://client/assests/sprites/pet/player-single.png"
-dest_files=["res://.godot/imported/player-single.png-4da8d115f0cfac701186a89e5df11d35.ctex"]
+source_file="res://client/assests/sprites/pet/tall.png"
+dest_files=["res://.godot/imported/tall.png-c278237ac36ad32bacac411a65677204.ctex"]
 
 [params]
 
