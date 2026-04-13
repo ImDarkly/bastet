@@ -13,4 +13,10 @@ Thumbs.db
 *.tmp
 
 # Server
+# Server
 server/node_modules/
+server/.env
+server/*.log
+server/npm-debug.log*
+server/dist/
+server/build/
