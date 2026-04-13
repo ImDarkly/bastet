@@ -1,0 +1,13 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "In-memory pet state WebSocket server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.18.2"
+  }
+}
