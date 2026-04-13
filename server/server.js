@@ -1,0 +1,73 @@
+const { WebSocketServer, WebSocket } = require("ws");
+
+const petState = {
+  hunger: 50,
+  happiness: 50,
+  last_updated: new Date().toISOString(),
+};
+
+const actions = {
+  feed(state) {
+    state.hunger = Math.max(0, state.hunger - 20);
+    state.happiness = Math.min(100, state.happiness + 5);
+  },
+  play(state) {
+    state.happiness = Math.min(100, state.happiness + 20);
+    state.hunger = Math.min(100, state.hunger + 5);
+  },
+};
+
+function broadcast(wss, payload) {
+  const msg = JSON.stringify(payload);
+  for (const client of wss.clients) {
+    if (client.readyState === WebSocket.OPEN) client.send(msg);
+  }
+}
+
+const PORT = process.env.PORT || 8080;
+const wss = new WebSocketServer({ port: PORT });
+
+console.log(`Pet WebSocket server listening on port ${PORT}`);
+
+wss.on("connection", (ws) => {
+  console.log("Client connected — sending current state");
+
+  ws.send(JSON.stringify({ type: "state", state: petState }));
+
+  ws.on("message", (raw) => {
+    let msg;
+    try {
+      msg = JSON.parse(raw);
+    } catch {
+      ws.send(JSON.stringify({ type: "error", message: "Invalid JSON" }));
+      return;
+    }
+
+    if (msg.type !== "action") {
+      ws.send(
+        JSON.stringify({ type: "error", message: `Unknown type: ${msg.type}` }),
+      );
+      return;
+    }
+
+    const handler = actions[msg.action];
+    if (!handler) {
+      ws.send(
+        JSON.stringify({
+          type: "error",
+          message: `Unknown action: ${msg.action}`,
+        }),
+      );
+      return;
+    }
+
+    handler(petState);
+    petState.last_updated = new Date().toISOString();
+    console.log(`Action "${msg.action}" → state:`, petState);
+
+    broadcast(wss, { type: "state", state: petState });
+  });
+
+  ws.on("close", () => console.log("Client disconnected"));
+  ws.on("error", (err) => console.error("WebSocket error:", err.message));
+});
