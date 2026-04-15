@@ -1,4 +1,5 @@
 const { WebSocketServer, WebSocket } = require("ws");
+const http = require("http");
 const { state, feed, play } = require("./petState");
 
 const petState = state;
@@ -15,10 +16,12 @@ function broadcast(wss, payload) {
   }
 }
 
+const server = http.createServer();
+const wss = new WebSocketServer({ server });
 const PORT = process.env.PORT || 8080;
-const wss = new WebSocketServer({ port: PORT });
+server.listen(PORT);
 
-console.log(`Pet WebSocket server listening on port ${PORT}`);
+console.log(`Server listening on ${PORT}`);
 
 wss.on("connection", (ws) => {
   console.log("Client connected — sending current state");
