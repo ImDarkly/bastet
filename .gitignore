@@ -20,3 +20,4 @@ server/*.log
 server/npm-debug.log*
 server/dist/
 server/build/
+server/state.json
