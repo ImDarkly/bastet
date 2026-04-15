@@ -3,7 +3,10 @@ const { state, feed, play } = require("./petState");
 
 const petState = state;
 
-const actions = { feed, play };
+const actions = new Map([
+  ["feed", feed],
+  ["play", play],
+]);
 
 function broadcast(wss, payload) {
   const msg = JSON.stringify(payload);
@@ -38,7 +41,7 @@ wss.on("connection", (ws) => {
       return;
     }
 
-    const handler = actions[msg.action];
+    const handler = actions.get(msg.action);
     if (!handler) {
       ws.send(
         JSON.stringify({

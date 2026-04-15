@@ -17,9 +17,13 @@ func _process(delta: float) -> void:
 
 func _handle_message(text: String) -> void:
 	var data = JSON.parse_string(text)
+	if data == null or typeof(data) != TYPE_DICTIONARY:
+		return
 	if data == null or data.get("type") != "state":
 		return
 	var state = data.get("state")
+	if state == null or typeof(state) != TYPE_DICTIONARY:
+		return
 	if state == null or not state.has("hunger") or not state.has("happiness"):
 		return
 	Stats.set_stats(float(state["hunger"]), float(state["happiness"]))

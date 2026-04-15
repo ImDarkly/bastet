@@ -10,6 +10,7 @@ var happiness: float = 0.0
 
 func _ready():
 	Stats.stats_changed.connect(_on_stats_changed)
+	_on_stats_changed(Stats.hunger, Stats.happiness)
 	status_label.text = "Connecting..."
 
 func _process(delta: float) -> void:
