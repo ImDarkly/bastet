@@ -1,21 +1,12 @@
 const { WebSocketServer, WebSocket } = require("ws");
+const { state, feed, play } = require("./petState");
 
-const petState = {
-  hunger: 50,
-  happiness: 50,
-  last_updated: new Date().toISOString(),
-};
+const petState = state;
 
-const actions = {
-  feed(state) {
-    state.hunger = Math.max(0, state.hunger - 20);
-    state.happiness = Math.min(100, state.happiness + 5);
-  },
-  play(state) {
-    state.happiness = Math.min(100, state.happiness + 20);
-    state.hunger = Math.min(100, state.hunger + 5);
-  },
-};
+const actions = new Map([
+  ["feed", feed],
+  ["play", play],
+]);
 
 function broadcast(wss, payload) {
   const msg = JSON.stringify(payload);
@@ -50,7 +41,7 @@ wss.on("connection", (ws) => {
       return;
     }
 
-    const handler = actions[msg.action];
+    const handler = actions.get(msg.action);
     if (!handler) {
       ws.send(
         JSON.stringify({
@@ -61,10 +52,8 @@ wss.on("connection", (ws) => {
       return;
     }
 
-    handler(petState);
-    petState.last_updated = new Date().toISOString();
+    handler();
     console.log(`Action "${msg.action}" → state:`, petState);
-
     broadcast(wss, { type: "state", state: petState });
   });
 

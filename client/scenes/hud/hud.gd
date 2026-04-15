@@ -3,33 +3,30 @@ extends CanvasLayer
 var hunger: float = 0.0
 var happiness: float = 0.0
 
-const DECAY_RATE: float = 1.0 / 30.0
 
 @onready var hunger_bar = $StatsBars/HungerBar
 @onready var happiness_bar = $StatsBars/HappinessBar
-
-@onready var hunger_button = $StatsButtons/HungerButton
-@onready var happiness_button = $StatsButtons/HappinessButton
+@onready var status_label = $StatusLabel
 
 func _ready():
-	update_bars()
-
+	Stats.stats_changed.connect(_on_stats_changed)
+	_on_stats_changed(Stats.hunger, Stats.happiness)
+	status_label.text = "Connecting..."
 
 func _process(delta: float) -> void:
-	hunger = clamp(hunger  - DECAY_RATE * delta, 0.0, 100.0)
-	happiness = clamp(happiness - DECAY_RATE * delta, 0.0, 100.0)
-	update_bars()
+	if Network.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		status_label.text = "Connected"
+	elif Network.get_ready_state() == WebSocketPeer.STATE_CLOSED:
+		status_label.text = "Disconnected"
+
+func _on_stats_changed(hunger: float, happiness: float) -> void:
+	hunger_bar.value = hunger
+	happiness_bar.value = happiness
+
 
 func _on_hunger_button_pressed() -> void:
-	hunger = clamp(hunger + 10.0, 0.0, 100.0)
-	update_bars()
+	Network.send_action("feed")
 
 
 func _on_happiness_button_pressed() -> void:
-	happiness = clamp(happiness + 10.0, 0.0, 100.0)
-	update_bars()
-
-
-func update_bars():
-	hunger_bar.value = clamp(hunger, 0.0, 100.0)
-	happiness_bar.value = clamp(happiness, 0.0, 100.0)
+	Network.send_action("play")
