@@ -1,8 +1,8 @@
 const { WebSocketServer, WebSocket } = require("ws");
 const http = require("http");
+const { PORT, DECAY_INTERVAL_MS } = require("./config");
 const { state, feed, play } = require("./petState");
-
-const petState = state;
+const { decay } = require("./decay");
 
 const actions = new Map([
   ["feed", feed],
@@ -18,15 +18,19 @@ function broadcast(wss, payload) {
 
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
-const PORT = process.env.PORT || 8080;
 server.listen(PORT);
 
 console.log(`Server listening on ${PORT}`);
 
+setInterval(() => {
+  decay(state);
+  broadcast(wss, { type: "state", state });
+}, DECAY_INTERVAL_MS);
+
 wss.on("connection", (ws) => {
   console.log("Client connected — sending current state");
 
-  ws.send(JSON.stringify({ type: "state", state: petState }));
+  ws.send(JSON.stringify({ type: "state", state }));
 
   ws.on("message", (raw) => {
     let msg;
@@ -56,8 +60,8 @@ wss.on("connection", (ws) => {
     }
 
     handler();
-    console.log(`Action "${msg.action}" → state:`, petState);
-    broadcast(wss, { type: "state", state: petState });
+    console.log(`Action "${msg.action}" → state:`, state);
+    broadcast(wss, { type: "state", state });
   });
 
   ws.on("close", () => console.log("Client disconnected"));
