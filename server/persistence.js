@@ -17,7 +17,16 @@ function load() {
 }
 
 function save(state) {
-  fs.writeFileSync(STATE_FILE, JSON.stringify(state));
+  const tmp = STATE_FILE + ".tmp";
+  try {
+    fs.writeFileSync(tmp, JSON.stringify(state));
+    fs.renameSync(tmp, STATE_FILE);
+  } catch (err) {
+    try {
+      fs.unlinkSync(tmp);
+    } catch {}
+    throw err;
+  }
 }
 
 module.exports = { load, save };

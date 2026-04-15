@@ -1,6 +1,6 @@
 module.exports = {
   PORT: process.env.PORT || 8080,
-  STATE_FILE: "./state.json",
+  STATE_FILE: path.join(__dirname, "state.json"),
   DECAY_INTERVAL_MS: 30_000,
   DECAY_AMOUNT: 1,
   FEED_HUNGER_DELTA: 20,
