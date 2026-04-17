@@ -2,7 +2,8 @@ const { WebSocketServer, WebSocket } = require("ws");
 const http = require("http");
 const { PORT, DECAY_INTERVAL_MS } = require("./config");
 const { state, feed, play } = require("./petState");
-const { decay } = require("./decay");
+const { decay, catchUp } = require("./decay");
+const { load, save } = require("./db");
 
 const actions = new Map([
   ["feed", feed],
@@ -18,14 +19,31 @@ function broadcast(wss, payload) {
 
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
-server.listen(PORT);
 
-console.log(`Server listening on ${PORT}`);
+async function start() {
+  const saved = await load();
+  Object.assign(state, saved);
 
-setInterval(() => {
-  decay(state);
-  broadcast(wss, { type: "state", state });
-}, DECAY_INTERVAL_MS);
+  catchUp(state);
+
+  await save(state);
+
+  server.listen(PORT);
+  console.log(`Server listening on ${PORT}`);
+
+  setInterval(async () => {
+    try {
+      decay(state);
+      state.last_updated = new Date().toISOString();
+
+      await save(state);
+
+      broadcast(wss, { type: "state", state });
+    } catch (err) {
+      console.error("Decay interval error:", err);
+    }
+  }, DECAY_INTERVAL_MS);
+}
 
 wss.on("connection", (ws) => {
   console.log("Client connected — sending current state");
@@ -67,3 +85,5 @@ wss.on("connection", (ws) => {
   ws.on("close", () => console.log("Client disconnected"));
   ws.on("error", (err) => console.error("WebSocket error:", err.message));
 });
+
+start();

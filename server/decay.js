@@ -1,5 +1,4 @@
 const { DECAY_AMOUNT, DECAY_INTERVAL_MS } = require("./config");
-const { save } = require("./persistence");
 
 function applyDecay(state, ticks) {
   state.hunger = Math.max(0, state.hunger - DECAY_AMOUNT * ticks);
@@ -12,7 +11,6 @@ function catchUp(state) {
   if (missedTicks > 0) {
     applyDecay(state, missedTicks);
     state.last_updated = new Date().toISOString();
-    save(state);
     console.log(`Catch-up: applied ${missedTicks} decay tick(s)`);
   }
 }
@@ -20,7 +18,6 @@ function catchUp(state) {
 function decay(state) {
   applyDecay(state, 1);
   state.last_updated = new Date().toISOString();
-  save(state);
 }
 
 module.exports = { catchUp, decay };
