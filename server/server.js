@@ -30,14 +30,20 @@ async function start() {
 
   server.listen(PORT);
   console.log(`Server listening on ${PORT}`);
-}
 
-setInterval(async () => {
-  decay(state);
-  state.last_updated = new Date().toISOString();
-  await save(state);
-  broadcast(wss, { type: "state", state });
-}, DECAY_INTERVAL_MS);
+  setInterval(async () => {
+    try {
+      decay(state);
+      state.last_updated = new Date().toISOString();
+
+      await save(state);
+
+      broadcast(wss, { type: "state", state });
+    } catch (err) {
+      console.error("Decay interval error:", err);
+    }
+  }, DECAY_INTERVAL_MS);
+}
 
 wss.on("connection", (ws) => {
   console.log("Client connected — sending current state");
