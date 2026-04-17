@@ -10,9 +10,12 @@ async function load() {
 
 async function save(state) {
   await pool.query(
-    `UPDATE pet_state
-     SET hunger = $1, happiness = $2, last_updated = $3
-     WHERE id = 1`,
+    `INSERT INTO pet_state (id, hunger, happiness, last_updated)
+     VALUES (1, $1, $2, $3)
+     ON CONFLICT (id) DO UPDATE
+     SET hunger = EXCLUDED.hunger,
+         happiness = EXCLUDED.happiness,
+         last_updated = EXCLUDED.last_updated`,
     [state.hunger, state.happiness, new Date().toISOString()],
   );
 }
