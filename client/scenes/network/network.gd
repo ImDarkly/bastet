@@ -1,7 +1,7 @@
 extends Node
 
-const SERVER_URL = "wss://bastet.onrender.com/:10000"
-# const SERVER_URL = "ws://localhost:8080"
+#const SERVER_URL = "wss://bastet.onrender.com/:10000"
+const SERVER_URL = "ws://localhost:8080"
 
 var ws_peer = WebSocketPeer.new()
 
@@ -9,7 +9,7 @@ func _ready() -> void:
 	ws_peer.connect_to_url(SERVER_URL)
 
 func _process(delta: float) -> void:
-	ws_peer.poll()
+	ws_peer.poll() 
 
 	if ws_peer.get_ready_state() == WebSocketPeer.STATE_OPEN:
 		while ws_peer.get_available_packet_count() > 0:
