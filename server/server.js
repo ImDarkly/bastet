@@ -23,7 +23,10 @@ const wss = new WebSocketServer({ server });
 async function start() {
   const saved = await load();
   Object.assign(state, saved);
+
   catchUp(state);
+
+  await save(state);
 
   server.listen(PORT);
   console.log(`Server listening on ${PORT}`);
