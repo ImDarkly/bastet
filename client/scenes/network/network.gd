@@ -1,7 +1,7 @@
 extends Node
 
-const SERVER_URL = "wss://bastet.onrender.com/:10000"
-#const SERVER_URL = "ws://localhost:8080"
+#const SERVER_URL = "wss://bastet.onrender.com"
+const SERVER_URL = "ws://localhost:8080"
 
 var ws_peer = WebSocketPeer.new()
 

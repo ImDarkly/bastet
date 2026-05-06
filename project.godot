@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 
 Stats="*uid://ctwjscjmee6c4"
 Network="*uid://cvvj4dj7h8jav"
+Strings="*uid://cnprnj8uoslvx"
+Assets="*uid://b4ombcvnjc5xr"
 
 [display]
 
