@@ -4,6 +4,7 @@
 
 # Export artifacts
 exports/
+export/
 
 # OS junk
 .DS_Store
@@ -12,7 +13,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 
-# Server
 # Server
 server/node_modules/
 server/.env
