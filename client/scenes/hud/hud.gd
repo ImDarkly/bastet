@@ -16,10 +16,15 @@ func _ready():
 	status_label.text = Strings.STATUS_CONNECTING
 
 func _process(delta: float) -> void:
-	if Network.get_ready_state() == WebSocketPeer.STATE_OPEN:
-		status_label.text = Strings.STATUS_CONNECTED
-	elif Network.get_ready_state() == WebSocketPeer.STATE_CLOSED:
-		status_label.text = Strings.STATUS_DISCONNECTED
+	var state := Network.get_ready_state()
+	match state:
+		WebSocketPeer.STATE_OPEN:
+			status_label.text = Strings.STATUS_CONNECTED
+		WebSocketPeer.STATE_CONNECTING:
+			status_label.text = Strings.STATUS_CONNECTING
+		_:
+			status_label.text = Strings.STATUS_DISCONNECTED
+
 
 func _on_stats_changed(hunger: float, happiness: float) -> void:
 	hunger_bar.value = hunger

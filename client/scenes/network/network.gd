@@ -1,7 +1,7 @@
 extends Node
 
-#const SERVER_URL = "wss://bastet.onrender.com"
-const SERVER_URL = "ws://localhost:8080"
+const SERVER_URL = "wss://bastet.onrender.com"
+#const SERVER_URL = "ws://localhost:8080"
 
 var ws_peer = WebSocketPeer.new()
 
@@ -20,12 +20,12 @@ func _handle_message(text: String) -> void:
 	var data = JSON.parse_string(text)
 	if data == null or typeof(data) != TYPE_DICTIONARY:
 		return
-	if data == null or data.get("type") != "state":
+	if data.get("type") != "state":
 		return
 	var state = data.get("state")
 	if state == null or typeof(state) != TYPE_DICTIONARY:
 		return
-	if state == null or not state.has("hunger") or not state.has("happiness"):
+	if not state.has("hunger") or not state.has("happiness"):
 		return
 	Stats.set_stats(float(state["hunger"]), float(state["happiness"]))
 
