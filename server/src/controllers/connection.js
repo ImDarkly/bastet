@@ -6,7 +6,6 @@ const {
 } = require("../db/db");
 const { joinRoom, leaveRoom } = require("../models/room");
 const { generateCode } = require("../models/familyCode");
-const { catchUp } = require("../models/decay");
 const { handleAction } = require("./actions");
 
 const socketFamily = new Map();
@@ -64,9 +63,22 @@ async function _handleCreate(ws) {
 
 async function _handleJoin(ws, rawCode) {
   const code = (rawCode ?? "").toUpperCase();
-  const isReconnect = socketFamily.get(ws) === code;
+  const existingCode = socketFamily.get(ws);
 
-  const family = isReconnect ? await getFamily(code) : await joinFamily(code);
+  if (existingCode && existingCode !== code) {
+    ws.send(
+      JSON.stringify({
+        type: "error",
+        message: "Already joined to a different family",
+      }),
+    );
+    return;
+  }
+  const isAlreadyJoined = existingCode === code;
+
+  const family = isAlreadyJoined
+    ? await getFamily(code)
+    : await joinFamily(code);
   if (!family) {
     ws.send(
       JSON.stringify({
@@ -79,7 +91,7 @@ async function _handleJoin(ws, rawCode) {
 
   const state = _toState(family);
 
-  if (!isReconnect) {
+  if (!isAlreadyJoined) {
     socketFamily.set(ws, code);
     joinRoom(code, ws);
   }

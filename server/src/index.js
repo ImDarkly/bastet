@@ -29,8 +29,23 @@ setInterval(async () => {
         happiness: parseFloat(family.happiness),
       };
       decay(state);
-      await saveFamilyState(code, state.hunger, state.happiness);
-      broadcastToRoom(code, { type: "state", state });
+      const updated = await saveFamilyState(
+        code,
+        state.hunger,
+        state.happiness,
+      );
+      if (!updated) {
+        console.warn(`Could not broadcast state for family ${code}`);
+        continue;
+      }
+      broadcastToRoom(code, {
+        type: "state",
+        state: {
+          hunger: updated.hunger,
+          happiness: updated.happiness,
+          last_updated: updated.last_updated,
+        },
+      });
     } catch (err) {
       console.error("Decay error for", code, err);
     }

@@ -16,15 +16,28 @@ async function handleAction(ws, code, action) {
   }
 
   const family = await getFamily(code);
-  if (!family) return;
+  if (!family) {
+    ws.send(JSON.stringify({ type: "error", message: "Family not found" }));
+    return;
+  }
 
   const state = {
-    hunger: Math.min(100, parseFloat(family.hunger) + deltas.hunger),
-    happiness: Math.min(100, parseFloat(family.happiness) + deltas.happiness),
+    hunger: Math.max(
+      0,
+      Math.min(100, parseFloat(family.hunger) + deltas.hunger),
+    ),
+    happiness: Math.max(
+      0,
+      Math.min(100, parseFloat(family.happiness) + deltas.happiness),
+    ),
   };
 
-  await saveFamilyState(code, state.hunger, state.happiness);
-  broadcastToRoom(code, { type: "state", state });
+  const updated = await saveFamilyState(code, state.hunger, state.happiness);
+  if (!updated) {
+    ws.send(JSON.stringify({ type: "error", message: "Family not found" }));
+    return;
+  }
+  broadcastToRoom(code, { type: "state", state: updated });
 }
 
 module.exports = { handleAction };
