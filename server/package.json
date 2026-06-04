@@ -2,9 +2,9 @@
   "name": "server",
   "version": "0.0.1",
   "description": "In-memory pet state WebSocket server",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "license": "ISC",
   "dependencies": {
